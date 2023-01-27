@@ -144,7 +144,7 @@ jobs:
       - restore_cache:
           keys: [scanningbackend]
       # Your job code here
-       run:
+      - run:
           name: Backend Scan
           command: |
              # Your code here
