@@ -168,8 +168,8 @@ jobs:
       # Checkout code from git
       - checkout
       - run:
-          name: Dependecies Installment
-          commmand: |
+          name: Install dependencies
+          command: |
               yum install -y tar gzip
 
 
