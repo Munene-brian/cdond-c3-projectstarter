@@ -60,7 +60,7 @@ commands:
           when: on_fail
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS=$(curl --insecure "https://kvdb.io/GihzLn9tKaS8UmwtTTnRhb/migration_<<parameters.workflow_id>>")
+            SUCCESS=$(curl --insecure "https://kvdb.io/32S9StkeEmxP5cTojA7Z2XoG/migration_<<parameters.workflow_id>>")
             if(( $SUCCESS==1 )); 
             then
               cd ~/project/backend
@@ -297,8 +297,8 @@ jobs:
               curl --insecure https://kvdb.io/32S9StkeEmxP5cTojA7Z2XoG/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi  
   
-      # - destroy-environment
-      # - revert-migrations
+      - destroy-environment
+      - revert-migrations
 
   deploy-frontend:
     docker:
@@ -341,8 +341,8 @@ jobs:
             npm install
             npm run build
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-      # - destroy-environment
-      # - revert-migrations     
+      - destroy-environment
+      - revert-migrations     
                     
   deploy-backend:
     docker:
@@ -377,8 +377,8 @@ jobs:
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
-      # - destroy-environment
-      # - revert-migrations
+      - destroy-environment
+      - revert-migrations
 
   smoke-test:
     docker:
@@ -445,14 +445,13 @@ jobs:
       # - destroy-environment
       # - revert-migrations
 
-  cleanup:
+cleanup:
     docker:
       # Docker image here
       - image: cimg/base:stable
     steps:
       # Checkout code from git
       - checkout
-      - install_awscli
       - run:
           name: Get old stack workflow id
           command: |
@@ -470,6 +469,7 @@ jobs:
 
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
+              # your code here
               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
@@ -504,7 +504,7 @@ workflows:
           requires: [run-migrations]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
-      # - cloudfront-update:
-      #     requires: [smoke-test]
-      # - cleanup:
-      #     requires: [cloudfront-update]
+      - cloudfront-update:
+          requires: [smoke-test]
+      - cleanup:
+          requires: [cloudfront-update]
