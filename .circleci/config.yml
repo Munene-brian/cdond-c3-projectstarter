@@ -296,8 +296,8 @@ jobs:
               curl --insecure https://kvdb.io/32S9StkeEmxP5cTojA7Z2XoG/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi  
   
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
 
   deploy-frontend:
     docker:
@@ -412,12 +412,12 @@ jobs:
               echo $FRONTEND_WEBSITE
               if curl -s $FRONTEND_WEBSITE | grep "Welcome"
               then
-                exit 0
+                exit 1
               else
                 exit 1
               fi
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
 
 #   cloudfront-update:
 #     docker:
@@ -480,8 +480,8 @@ workflows:
           requires: [run-migrations]
       - deploy-backend:
           requires: [run-migrations]
-      # - smoke-test:
-      #     requires: [deploy-backend, deploy-frontend]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
       #     requires: [smoke-test]
       # - cleanup:
