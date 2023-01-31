@@ -294,7 +294,7 @@ jobs:
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
               curl --insecure https://kvdb.io/32S9StkeEmxP5cTojA7Z2XoG/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
-            fi  
+            fi
   
       # - destroy-environment
       # - revert-migrations
