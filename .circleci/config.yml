@@ -457,9 +457,9 @@ jobs:
       - install_awscli
       - run:
           name: Get old stack workflow id
-          command: |
+          command: |            
             export OldWorkflowID=$(aws cloudformation \
-                   list-exports --query "Exports[?Name==\`32S9StkeEmxP5cTojA7Z2XoG\`].Value" \
+                   list-exports --query "Exports[?Name==\`\`].Value" \
                    --no-paginate --output text)
             echo Old Workflow ID: "${OldWorkflowID}"
             echo CIRCLE_WORKFLOW_ID: "${CIRCLE_WORKFLOW_ID:0:7}"
@@ -467,7 +467,7 @@ jobs:
                 --query "StackSummaries[*].StackName" \
                 --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
             echo Stack names: "${STACKS[@]}"
-            if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
+            if [[ "${CIRCLE_WORKFLOW_ID:0:7" =~ "${OldWorkflowID}" ]]
             then
               # your code here
               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
